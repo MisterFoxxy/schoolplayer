@@ -17,6 +17,7 @@
   th, td { border:1px solid #ddd; padding:8px; text-align:left; }
   th { background:#f6f6f6; cursor:pointer; user-select:none; }
   th.active-col { background:#ffe7d6; }
+  .hide { display:none; }
   th.sort-asc::after  { content:' \25B2'; }
   th.sort-desc::after { content:' \25BC'; }
   @media(max-width:480px){
@@ -42,8 +43,8 @@
         <th data-k="fullName" onclick="sortBy(this)">ФИО</th>
         <th data-k="id"       onclick="sortBy(this)">ID ФШР</th>
         <th data-k="year"     onclick="sortBy(this)">Год рожд.</th>
-        <th data-k="rt"       onclick="sortBy(this)">ФШР Rapid</th>
-        <th data-k="lrt"      onclick="sortBy(this)">Lichess Rapid</th>
+        <th data-k="rt"  data-col="rt"  onclick="sortBy(this)">ФШР Rapid</th>
+        <th data-k="lrt" data-col="lrt" onclick="sortBy(this)">Lichess Rapid</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -59,13 +60,16 @@
     mode = m;
     col = m;        // сортируем по выбранному рейтингу
     asc = false;
+
     // переключатели
     document.getElementById('btnFSHR').classList.toggle('active', mode==='rt');
     document.getElementById('btnLICH').classList.toggle('active', mode==='lrt');
-    // подсветка заголовка
+
+    // подсветка и стрелка на активном заголовке
     document.querySelectorAll('th').forEach(h => h.classList.remove('active-col','sort-asc','sort-desc'));
     const th = document.querySelector('th[data-k="'+mode+'"]');
     if (th) th.classList.add('active-col','sort-desc');
+
     render();
   }
 
@@ -76,6 +80,19 @@
     th.classList.add(asc ? 'sort-asc' : 'sort-desc');
     th.classList.add('active-col');
     render();
+  }
+
+  function applyColumnVisibility(){
+    const showRt  = (mode === 'rt');
+    // заголовки
+    const thRt  = document.querySelector('th[data-col="rt"]');
+    const thLrt = document.querySelector('th[data-col="lrt"]');
+    if (thRt)  thRt.classList.toggle('hide', !showRt);
+    if (thLrt) thLrt.classList.toggle('hide', showRt);
+
+    // ячейки строк
+    document.querySelectorAll('td[data-col="rt"]').forEach(td => td.classList.toggle('hide', !showRt));
+    document.querySelectorAll('td[data-col="lrt"]').forEach(td => td.classList.toggle('hide', showRt));
   }
 
   function render(){
@@ -105,10 +122,12 @@
         '<td>' + r.fullName + '</td>' +
         '<td>' + r.id       + '</td>' +
         '<td>' + r.year     + '</td>' +
-        '<td>' + r.rt       + '</td>' +
-        '<td>' + r.lrt      + '</td>';
+        '<td data-col="rt">'  + r.rt  + '</td>' +
+        '<td data-col="lrt">' + r.lrt + '</td>';
       body.appendChild(tr);
     });
+
+    applyColumnVisibility();
   }
 
   // Старт: режим ФШР
