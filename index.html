@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Список учеников — ФШР RAPID</title>
+<style>
+  body { font-family: Arial, sans-serif; margin:0; padding:20px; }
+  h2 { margin: 0 0 16px; text-align:center; }
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:12px; }
+  .search { padding:8px 10px; border:1px solid #ccc; border-radius:6px; min-width:220px; }
+  table { width:100%; border-collapse:collapse; margin-top:10px; }
+  th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+  th { background:#f6f6f6; cursor:pointer; user-select:none; }
+  th.sort-asc::after  { content:' \25B2'; }
+  th.sort-desc::after { content:' \25BC'; }
+  @media(max-width:480px){
+    body { padding:12px; }
+    th, td { padding:6px; font-size:12px; }
+  }
+</style>
+</head>
+<body>
+  <h2>Ученики — ФШР RAPID</h2>
+  <div class="toolbar">
+    <input id="q" class="search" type="search" placeholder="Поиск по ФИО..." oninput="render()" />
+  </div>
+  <table id="tab">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th data-k="fullName" onclick="sortBy(this)">ФИО</th>
+        <th data-k="id"       onclick="sortBy(this)">ID ФШР</th>
+        <th data-k="year"     onclick="sortBy(this)">Год рожд.</th>
+        <th data-k="rt"       onclick="sortBy(this)">RAPID</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730"},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445"},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429"},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409"},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391"},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387"},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240"},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231"},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189"},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188"},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185"},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152"},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147"},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085"},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050"},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032"},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000"}];
+  let col = 'rt';
+  let asc = false;
+
+  function sortBy(th){
+    const k = th.getAttribute('data-k');
+    if (col === k) { asc = !asc; } else { col = k; asc = false; }
+    document.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc','sort-desc'));
+    th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+    render();
+  }
+
+  function render(){
+    const q = (document.getElementById('q').value || '').toLowerCase().trim();
+    const body = document.querySelector('#tab tbody');
+    body.innerHTML = '';
+
+    const filtered = data.filter(r => {
+      if (!q) return true;
+      return String(r.fullName).toLowerCase().includes(q);
+    });
+
+    filtered.sort((a,b) => {
+      const A = a[col] ?? '';
+      const B = b[col] ?? '';
+      if (col === 'rt') {
+        const nA = parseFloat(A); const nB = parseFloat(B);
+        const xA = isNaN(nA) ? 0 : nA;
+        const xB = isNaN(nB) ? 0 : nB;
+        return asc ? (xA - xB) : (xB - xA);
+      }
+      if (A < B) return asc ? -1 : 1;
+      if (A > B) return asc ?  1 : -1;
+      return 0;
+    });
+
+    filtered.forEach((r, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + (i+1) + '</td>' +
+                     '<td>' + r.fullName + '</td>' +
+                     '<td>' + r.id       + '</td>' +
+                     '<td>' + r.year     + '</td>' +
+                     '<td>' + r.rt       + '</td>';
+      body.appendChild(tr);
+    });
+  }
+
+  window.onload = function(){
+    const th = document.querySelector('th[data-k="rt"]');
+    th.classList.add('sort-desc');
+    render();
+  };
+</script>
+</body>
+</html>
+  
