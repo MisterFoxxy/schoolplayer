@@ -74,14 +74,14 @@
     });
 
     filtered.forEach((r, i) => {
-      const lich = r.lichess ? ('<a href="https://lichess.org/@/' + r.lichess + '" target="_blank" rel="noopener">' + r.lrt + '</a>') : r.lrt;
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + (i+1) + '</td>' +
-                     '<td>' + r.fullName + '</td>' +
-                     '<td>' + r.id       + '</td>' +
-                     '<td>' + r.year     + '</td>' +
-                     '<td>' + r.rt       + '</td>' +
-                     '<td>' + lich       + '</td>';
+      tr.innerHTML =
+        '<td>' + (i+1) + '</td>' +
+        '<td>' + r.fullName + '</td>' +
+        '<td>' + r.id       + '</td>' +
+        '<td>' + r.year     + '</td>' +
+        '<td>' + r.rt       + '</td>' +
+        '<td>' + r.lrt      + '</td>'; // ← БЕЗ ССЫЛКИ
       body.appendChild(tr);
     });
   }
