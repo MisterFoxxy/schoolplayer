@@ -9,7 +9,7 @@
   body { font-family: Arial, sans-serif; margin:0; padding:20px; }
   h2 { margin: 0 0 16px; text-align:center; }
   .toolbar { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center; margin-bottom:12px; }
-  .search { padding:8px 10px; border:1px solid #ccc; border-radius:6px; min-width:220px; }
+  .search, .select { padding:8px 10px; border:1px solid #ccc; border-radius:6px; min-width:220px; background:#fff; }
   .seg { display:inline-flex; border:1px solid #ccc; border-radius:8px; overflow:hidden; }
   .seg-btn { padding:8px 12px; background:#f6f6f6; border:none; cursor:pointer; }
   .seg-btn.active { background:#d96b1c; color:#fff; }
@@ -25,6 +25,7 @@
     body { padding:12px; }
     th, td { padding:6px; font-size:12px; }
     .seg-btn { padding:6px 8px; }
+    .search, .select { min-width:160px; }
   }
 </style>
 </head>
@@ -32,6 +33,9 @@
   <h2>Ученики — ФШР / Lichess Rapid + Прогресс за 30 дней</h2>
   <div class="toolbar">
     <input id="q" class="search" type="search" placeholder="Поиск по ФИО..." oninput="render()" />
+    <select id="coach" class="select" onchange="render()">
+      <option value="">Все тренеры</option>
+    </select>
     <div class="seg">
       <button id="btnFSHR" class="seg-btn active" onclick="setMode('rt')">ФШР Rapid</button>
       <button id="btnLICH" class="seg-btn" onclick="setMode('lrt')">Lichess Rapid</button>
@@ -56,10 +60,23 @@
   </table>
 
 <script>
-  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ВРУБЕЛЬ КОНСТАНТИН РОМАНОВИЧ|2017","rtDeltaPctNum":null},{"fullName":"Симонов Михей Андреевич","id":"477943","year":"2012","rt":"1487","lichess":"michey1","lrt":"1740","lrtDeltaPctNum":-0.05743825387708214,"hkey":"lich:michey1","rtDeltaPctNum":null},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445","lichess":"dasshhaa","lrt":"1983","lrtDeltaPctNum":2.058672156459084,"hkey":"lich:dasshhaa","rtDeltaPctNum":null},{"fullName":"Осипова Елизавета Алексеевна","id":"381655","year":"2011","rt":"1435","lichess":"osipovaliza","lrt":"1911","lrtDeltaPctNum":0,"hkey":"lich:osipovaliza","rtDeltaPctNum":null},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lichess":"kirill_fut","lrt":"1629","lrtDeltaPctNum":1.1801242236024845,"hkey":"lich:kirill_fut","rtDeltaPctNum":null},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409","lichess":"student2323","lrt":"1749","lrtDeltaPctNum":-2.2905027932960893,"hkey":"lich:student2323","rtDeltaPctNum":null},{"fullName":"Галанц Илья Вячеславович","id":"640600","year":"2010","rt":"1407","lichess":"niceg0mer4680","lrt":"1880","lrtDeltaPctNum":0.8583690987124464,"hkey":"lich:niceg0mer4680","rtDeltaPctNum":null},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lichess":"ktotakaia","lrt":"1775","lrtDeltaPctNum":-1.0590858416945375,"hkey":"lich:ktotakaia","rtDeltaPctNum":null},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lichess":"grdaniil","lrt":"1841","lrtDeltaPctNum":2.39154616240267,"hkey":"lich:grdaniil","rtDeltaPctNum":null},{"fullName":"Бондаренко Максим Сергеевич","id":"615456","year":"2015","rt":"1301","lichess":"maxim_bondarenko","lrt":"1711","lrtDeltaPctNum":3.0102347983142685,"hkey":"lich:maxim_bondarenko","rtDeltaPctNum":null},{"fullName":"Оспичев Антон Игоревич","id":"623573","year":"2016","rt":"1277","lichess":"anton_ospichev","lrt":"1455","lrtDeltaPctNum":1.9621583742116329,"hkey":"lich:anton_ospichev","rtDeltaPctNum":null},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lichess":"liza1107","lrt":"1534","lrtDeltaPctNum":2.608695652173913,"hkey":"lich:liza1107","rtDeltaPctNum":null},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231","lichess":"goshapur","lrt":"1256","lrtDeltaPctNum":-4.704097116843703,"hkey":"lich:goshapur","rtDeltaPctNum":null},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lichess":"borisovmax","lrt":"1580","lrtDeltaPctNum":0.7010834926704907,"hkey":"lich:borisovmax","rtDeltaPctNum":null},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ПЕРВАКОВА АЛЁНА ДЕНИСОВНА|2018","rtDeltaPctNum":null},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lichess":"platon_korelov-2015","lrt":"1187","lrtDeltaPctNum":-9.939301972685888,"hkey":"lich:platon_korelov-2015","rtDeltaPctNum":null},{"fullName":"Фирсов Иван Денисович","id":"596107","year":"2017","rt":"1171","lichess":"firsovid","lrt":"1493","lrtDeltaPctNum":5.140845070422535,"hkey":"lich:firsovid","rtDeltaPctNum":null},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152","lichess":"igorlego","lrt":"1443","lrtDeltaPctNum":-1.367053998632946,"hkey":"lich:igorlego","rtDeltaPctNum":null},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lichess":"dimshah","lrt":"1406","lrtDeltaPctNum":0.4285714285714286,"hkey":"lich:dimshah","rtDeltaPctNum":null},{"fullName":"Марков Андрей Алексеевич","id":"541954","year":"2015","rt":"1139","lichess":"maa2015","lrt":"1633","lrtDeltaPctNum":8.866666666666667,"hkey":"lich:maa2015","rtDeltaPctNum":null},{"fullName":"Агеенко Федор Ильич","id":"692354","year":"2017","rt":"1137","lichess":"fedor_ageenko","lrt":"1595","lrtDeltaPctNum":3.1027795733678087,"hkey":"lich:fedor_ageenko","rtDeltaPctNum":null},{"fullName":"Зуева Мария Владимировна","id":"601921","year":"2016","rt":"1110","lichess":"mashazueva2016","lrt":"1157","lrtDeltaPctNum":0,"hkey":"lich:mashazueva2016","rtDeltaPctNum":null},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lichess":"sl5557","lrt":"1140","lrtDeltaPctNum":5.360443622920517,"hkey":"lich:sl5557","rtDeltaPctNum":null},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lichess":"secret_kelpi","lrt":"1269","lrtDeltaPctNum":-1.5515903801396431,"hkey":"lich:secret_kelpi","rtDeltaPctNum":null},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032","lichess":"lechat_2016","lrt":"1295","lrtDeltaPctNum":-0.7662835249042145,"hkey":"lich:lechat_2016","rtDeltaPctNum":null},{"fullName":"Пестова Анастасия Сергеевна","id":"618051","year":"2015","rt":"1014","lichess":"nastya1990","lrt":"1208","lrtDeltaPctNum":-1.3071895424836601,"hkey":"lich:nastya1990","rtDeltaPctNum":null},{"fullName":"Кошуков Вячеслав Максимович","id":"501084","year":"2015","rt":"1001","lichess":"slava_0512","lrt":"1276","lrtDeltaPctNum":0,"hkey":"lich:slava_0512","rtDeltaPctNum":null},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:КУХНИН МИХАИЛ ИВАНОВИЧ|2016","rtDeltaPctNum":null},{"fullName":"Саломатова Екатерина Дмитриевна","id":"665172","year":"2016","rt":"1000","lichess":"rozovyj_ferz","lrt":"1060","lrtDeltaPctNum":3.6168132942326494,"hkey":"lich:rozovyj_ferz","rtDeltaPctNum":null},{"fullName":"Г.Давид","id":"-","year":"2018","rt":"-","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:Г.ДАВИД|2018","rtDeltaPctNum":null},{"fullName":"Алибеков Жангир","id":"-","year":"2011","rt":"-","lichess":"anhonestplayer1","lrt":"2175","lrtDeltaPctNum":1.5406162464985995,"hkey":"lich:anhonestplayer1","rtDeltaPctNum":null},{"fullName":"Днепровский Сергей","id":"-","year":"-","rt":"-","lichess":"rollcager","lrt":"926","lrtDeltaPctNum":3.3482142857142856,"hkey":"lich:rollcager","rtDeltaPctNum":null},{"fullName":"Рогалев Виктор","id":"-","year":"-","rt":"-","lichess":"dnsergej","lrt":"1343","lrtDeltaPctNum":-3.934191702432046,"hkey":"lich:dnsergej","rtDeltaPctNum":null}];
+  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ВРУБЕЛЬ КОНСТАНТИН РОМАНОВИЧ|2017","coach":"Гутов А.Н.","rtDeltaPctNum":null},{"fullName":"Симонов Михей Андреевич","id":"477943","year":"2012","rt":"1487","lichess":"michey1","lrt":"1740","lrtDeltaPctNum":-0.05743825387708214,"hkey":"lich:michey1","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445","lichess":"dasshhaa","lrt":"1983","lrtDeltaPctNum":2.058672156459084,"hkey":"lich:dasshhaa","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Осипова Елизавета Алексеевна","id":"381655","year":"2011","rt":"1435","lichess":"osipovaliza","lrt":"1911","lrtDeltaPctNum":0,"hkey":"lich:osipovaliza","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lichess":"kirill_fut","lrt":"1629","lrtDeltaPctNum":1.1801242236024845,"hkey":"lich:kirill_fut","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409","lichess":"student2323","lrt":"1749","lrtDeltaPctNum":-2.2905027932960893,"hkey":"lich:student2323","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Галанц Илья Вячеславович","id":"640600","year":"2010","rt":"1407","lichess":"niceg0mer4680","lrt":"1880","lrtDeltaPctNum":0.8583690987124464,"hkey":"lich:niceg0mer4680","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lichess":"ktotakaia","lrt":"1775","lrtDeltaPctNum":-1.0590858416945375,"hkey":"lich:ktotakaia","coach":"Гутов А.Н.","rtDeltaPctNum":null},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lichess":"grdaniil","lrt":"1841","lrtDeltaPctNum":2.39154616240267,"hkey":"lich:grdaniil","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Бондаренко Максим Сергеевич","id":"615456","year":"2015","rt":"1301","lichess":"maxim_bondarenko","lrt":"1711","lrtDeltaPctNum":3.0102347983142685,"hkey":"lich:maxim_bondarenko","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Оспичев Антон Игоревич","id":"623573","year":"2016","rt":"1277","lichess":"anton_ospichev","lrt":"1455","lrtDeltaPctNum":1.9621583742116329,"hkey":"lich:anton_ospichev","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lichess":"liza1107","lrt":"1534","lrtDeltaPctNum":2.608695652173913,"hkey":"lich:liza1107","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231","lichess":"goshapur","lrt":"1256","lrtDeltaPctNum":-4.704097116843703,"hkey":"lich:goshapur","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lichess":"borisovmax","lrt":"1580","lrtDeltaPctNum":0.7010834926704907,"hkey":"lich:borisovmax","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ПЕРВАКОВА АЛЁНА ДЕНИСОВНА|2018","coach":"Гутов А.Н.","rtDeltaPctNum":null},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lichess":"platon_korelov-2015","lrt":"1187","lrtDeltaPctNum":-9.939301972685888,"hkey":"lich:platon_korelov-2015","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Фирсов Иван Денисович","id":"596107","year":"2017","rt":"1171","lichess":"firsovid","lrt":"1493","lrtDeltaPctNum":5.140845070422535,"hkey":"lich:firsovid","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152","lichess":"igorlego","lrt":"1443","lrtDeltaPctNum":-1.367053998632946,"hkey":"lich:igorlego","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lichess":"dimshah","lrt":"1406","lrtDeltaPctNum":0.4285714285714286,"hkey":"lich:dimshah","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Марков Андрей Алексеевич","id":"541954","year":"2015","rt":"1139","lichess":"maa2015","lrt":"1633","lrtDeltaPctNum":8.866666666666667,"hkey":"lich:maa2015","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Агеенко Федор Ильич","id":"692354","year":"2017","rt":"1137","lichess":"fedor_ageenko","lrt":"1595","lrtDeltaPctNum":3.1027795733678087,"hkey":"lich:fedor_ageenko","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Зуева Мария Владимировна","id":"601921","year":"2016","rt":"1110","lichess":"mashazueva2016","lrt":"1157","lrtDeltaPctNum":0,"hkey":"lich:mashazueva2016","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lichess":"sl5557","lrt":"1140","lrtDeltaPctNum":5.360443622920517,"hkey":"lich:sl5557","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lichess":"secret_kelpi","lrt":"1269","lrtDeltaPctNum":-1.5515903801396431,"hkey":"lich:secret_kelpi","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032","lichess":"lechat_2016","lrt":"1295","lrtDeltaPctNum":-0.7662835249042145,"hkey":"lich:lechat_2016","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Пестова Анастасия Сергеевна","id":"618051","year":"2015","rt":"1014","lichess":"nastya1990","lrt":"1208","lrtDeltaPctNum":-1.3071895424836601,"hkey":"lich:nastya1990","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Кошуков Вячеслав Максимович","id":"501084","year":"2015","rt":"1001","lichess":"slava_0512","lrt":"1276","lrtDeltaPctNum":0,"hkey":"lich:slava_0512","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:КУХНИН МИХАИЛ ИВАНОВИЧ|2016","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Саломатова Екатерина Дмитриевна","id":"665172","year":"2016","rt":"1000","lichess":"rozovyj_ferz","lrt":"1060","lrtDeltaPctNum":3.6168132942326494,"hkey":"lich:rozovyj_ferz","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Г.Давид","id":"-","year":"2018","rt":"-","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:Г.ДАВИД|2018","coach":"Радионов Т.Р.","rtDeltaPctNum":null},{"fullName":"Алибеков Жангир","id":"-","year":"2011","rt":"-","lichess":"anhonestplayer1","lrt":"2175","lrtDeltaPctNum":1.5406162464985995,"hkey":"lich:anhonestplayer1","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Днепровский Сергей","id":"-","year":"-","rt":"-","lichess":"rollcager","lrt":"926","lrtDeltaPctNum":3.3482142857142856,"hkey":"lich:rollcager","coach":"Чеклецов И.Г.","rtDeltaPctNum":null},{"fullName":"Рогалев Виктор","id":"-","year":"-","rt":"-","lichess":"dnsergej","lrt":"1343","lrtDeltaPctNum":-3.934191702432046,"hkey":"lich:dnsergej","coach":"Чеклецов И.Г.","rtDeltaPctNum":null}];
   let col = 'rt';   // текущая колонка сортировки
   let asc = false;  // по убыванию
   let mode = 'rt';  // выбранный рейтинг (rt | lrt)
+
+  // инициализация списка тренеров
+  function initCoachFilter(){
+    const sel = document.getElementById('coach');
+    const set = new Set();
+    data.forEach(r => { if (r.coach && r.coach.trim()) set.add(r.coach.trim()); });
+    const opts = Array.from(set).sort((a,b)=> a.localeCompare(b, 'ru'));
+    opts.forEach(name => {
+      const o = document.createElement('option');
+      o.value = name; o.textContent = name;
+      sel.appendChild(o);
+    });
+  }
 
   function setMode(m){
     mode = m;
@@ -99,12 +116,10 @@
     const cap = 30; // при |pct| >= 30% цвет максимально насыщенный
     const t = Math.max(0, Math.min(Math.abs(pct) / cap, 1)); // 0..1
     if (pct > 0) {
-      // зелёный, насыщенность растёт с t
       const s = Math.round(30 + 60 * t); // 30..90
-      const l = 35;                      // фикс
+      const l = 35;
       return 'hsl(135, ' + s + '%, ' + l + '%)';
     } else if (pct < 0) {
-      // красный, насыщенность растёт с |t|
       const s = Math.round(30 + 60 * t); // 30..90
       const l = 40;
       return 'hsl(0, ' + s + '%, ' + l + '%)';
@@ -119,15 +134,19 @@
 
   function render(){
     const q = (document.getElementById('q').value || '').toLowerCase().trim();
+    const coach = (document.getElementById('coach').value || '').trim();
     const body = document.querySelector('#tab tbody');
     body.innerHTML = '';
 
-    const filtered = data.filter(r => !q || String(r.fullName).toLowerCase().includes(q));
+    const filtered = data.filter(r => {
+      const byName = !q || String(r.fullName).toLowerCase().includes(q);
+      const byCoach = !coach || (r.coach || '').trim() === coach;
+      return byName && byCoach;
+    });
 
     filtered.sort((a,b) => {
       const A = a[col] ?? '';
       const B = b[col] ?? '';
-      // числовая сортировка для рейтингов и прогресса
       if (col === 'rt' || col === 'lrt' || col === 'rtDeltaPctNum' || col === 'lrtDeltaPctNum') {
         const xA = isNaN(parseFloat(A)) ? (typeof A === 'number' ? A : 0) : parseFloat(A);
         const xB = isNaN(parseFloat(B)) ? (typeof B === 'number' ? B : 0) : parseFloat(B);
@@ -161,6 +180,7 @@
   }
 
   window.onload = function(){
+    initCoachFilter();
     setMode('rt');
   };
 </script>
