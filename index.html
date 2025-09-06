@@ -4,20 +4,25 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Список учеников — ФШР Rapid + Lichess Rapid</title>
+<title>Ученики — ФШР Rapid + Lichess Rapid</title>
 <style>
   body { font-family: Arial, sans-serif; margin:0; padding:20px; }
   h2 { margin: 0 0 16px; text-align:center; }
-  .toolbar { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:12px; }
+  .toolbar { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center; margin-bottom:12px; }
   .search { padding:8px 10px; border:1px solid #ccc; border-radius:6px; min-width:220px; }
+  .seg { display:inline-flex; border:1px solid #ccc; border-radius:8px; overflow:hidden; }
+  .seg-btn { padding:8px 12px; background:#f6f6f6; border:none; cursor:pointer; }
+  .seg-btn.active { background:#d96b1c; color:#fff; }
   table { width:100%; border-collapse:collapse; margin-top:10px; }
   th, td { border:1px solid #ddd; padding:8px; text-align:left; }
   th { background:#f6f6f6; cursor:pointer; user-select:none; }
+  th.active-col { background:#ffe7d6; }
   th.sort-asc::after  { content:' \25B2'; }
   th.sort-desc::after { content:' \25BC'; }
   @media(max-width:480px){
     body { padding:12px; }
     th, td { padding:6px; font-size:12px; }
+    .seg-btn { padding:6px 8px; }
   }
 </style>
 </head>
@@ -25,6 +30,10 @@
   <h2>Ученики — ФШР Rapid + Lichess Rapid</h2>
   <div class="toolbar">
     <input id="q" class="search" type="search" placeholder="Поиск по ФИО..." oninput="render()" />
+    <div class="seg">
+      <button id="btnFSHR" class="seg-btn active" onclick="setMode('rt')">ФШР Rapid</button>
+      <button id="btnLICH" class="seg-btn" onclick="setMode('lrt')">Lichess Rapid</button>
+    </div>
   </div>
   <table id="tab">
     <thead>
@@ -42,14 +51,30 @@
 
 <script>
   const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lrt":"-","lichess":""},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445","lrt":"1983","lichess":"dasshhaa"},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lrt":"1629","lichess":"kirill_fut"},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409","lrt":"1749","lichess":"student2323"},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lrt":"1775","lichess":"ktotakaia"},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lrt":"1841","lichess":"grdaniil"},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lrt":"1534","lichess":"liza1107"},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231","lrt":"1256","lichess":"goshapur"},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lrt":"1580","lichess":"borisovmax"},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lrt":"-","lichess":""},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lrt":"1187","lichess":"platon_korelov-2015"},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152","lrt":"1443","lichess":"igorlego"},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lrt":"1406","lichess":"dimshah"},{"fullName":"Марков Андрей Алексеевич","id":"541954","year":"2015","rt":"1139","lrt":"1633","lichess":"maa2015"},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lrt":"1140","lichess":"sl5557"},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lrt":"1269","lichess":"secret_kelpi"},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032","lrt":"1295","lichess":"lechat_2016"},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lrt":"-","lichess":""}];
-  let col = 'rt';
-  let asc = false;
+  let col = 'rt';   // текущая колонка сортировки
+  let asc = false;  // по убыванию
+  let mode = 'rt';  // выбранный рейтинг (rt | lrt)
+
+  function setMode(m){
+    mode = m;
+    col = m;        // сортируем по выбранному рейтингу
+    asc = false;
+    // переключатели
+    document.getElementById('btnFSHR').classList.toggle('active', mode==='rt');
+    document.getElementById('btnLICH').classList.toggle('active', mode==='lrt');
+    // подсветка заголовка
+    document.querySelectorAll('th').forEach(h => h.classList.remove('active-col','sort-asc','sort-desc'));
+    const th = document.querySelector('th[data-k="'+mode+'"]');
+    if (th) th.classList.add('active-col','sort-desc');
+    render();
+  }
 
   function sortBy(th){
     const k = th.getAttribute('data-k');
     if (col === k) { asc = !asc; } else { col = k; asc = false; }
-    document.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc','sort-desc'));
+    document.querySelectorAll('th').forEach(h => h.classList.remove('sort-asc','sort-desc','active-col'));
     th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+    th.classList.add('active-col');
     render();
   }
 
@@ -81,14 +106,14 @@
         '<td>' + r.id       + '</td>' +
         '<td>' + r.year     + '</td>' +
         '<td>' + r.rt       + '</td>' +
-        '<td>' + r.lrt      + '</td>'; // ← БЕЗ ССЫЛКИ
+        '<td>' + r.lrt      + '</td>';
       body.appendChild(tr);
     });
   }
 
+  // Старт: режим ФШР
   window.onload = function(){
-    document.querySelector('th[data-k="rt"]').classList.add('sort-desc');
-    render();
+    setMode('rt');
   };
 </script>
 </body>
