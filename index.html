@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Ученики — ФШР / Lichess Rapid + Δ% за 30 дней</title>
+<title>Ученики — ФШР / Lichess Rapid + Прогресс за 30 дней</title>
 <style>
   body { font-family: Arial, sans-serif; margin:0; padding:20px; }
   h2 { margin: 0 0 16px; text-align:center; }
@@ -20,6 +20,7 @@
   .hide { display:none; }
   th.sort-asc::after  { content:' \25B2'; }
   th.sort-desc::after { content:' \25BC'; }
+  .delta { font-weight:600; }
   @media(max-width:480px){
     body { padding:12px; }
     th, td { padding:6px; font-size:12px; }
@@ -28,7 +29,7 @@
 </style>
 </head>
 <body>
-  <h2>Ученики — ФШР / Lichess Rapid + Δ% за 30 дней</h2>
+  <h2>Ученики — ФШР / Lichess Rapid + Прогресс за 30 дней</h2>
   <div class="toolbar">
     <input id="q" class="search" type="search" placeholder="Поиск по ФИО..." oninput="render()" />
     <div class="seg">
@@ -45,17 +46,17 @@
         <th data-k="year"     onclick="sortBy(this)">Год рожд.</th>
 
         <th data-k="rt"             data-col="rt"  onclick="sortBy(this)">ФШР Rapid</th>
-        <th data-k="rtDeltaPctNum"  data-col="rt"  onclick="sortBy(this)">Δ% 30дн</th>
+        <th data-k="rtDeltaPctNum"  data-col="rt"  onclick="sortBy(this)">Прогресс</th>
 
         <th data-k="lrt"            data-col="lrt" onclick="sortBy(this)">Lichess Rapid</th>
-        <th data-k="lrtDeltaPctNum" data-col="lrt" onclick="sortBy(this)">Δ% 30дн</th>
+        <th data-k="lrtDeltaPctNum" data-col="lrt" onclick="sortBy(this)">Прогресс</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
 <script>
-  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ВРУБЕЛЬ КОНСТАНТИН РОМАНОВИЧ|2017","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"—"},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445","lichess":"dasshhaa","lrt":"1983","lrtDeltaPctNum":2.058672156459084,"hkey":"lich:dasshhaa","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+2.1%"},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lichess":"kirill_fut","lrt":"1629","lrtDeltaPctNum":1.1801242236024845,"hkey":"lich:kirill_fut","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+1.2%"},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409","lichess":"student2323","lrt":"1749","lrtDeltaPctNum":-2.2905027932960893,"hkey":"lich:student2323","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-2.3%"},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lichess":"ktotakaia","lrt":"1775","lrtDeltaPctNum":-1.0590858416945375,"hkey":"lich:ktotakaia","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-1.1%"},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lichess":"grdaniil","lrt":"1841","lrtDeltaPctNum":2.39154616240267,"hkey":"lich:grdaniil","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+2.4%"},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lichess":"liza1107","lrt":"1534","lrtDeltaPctNum":2.608695652173913,"hkey":"lich:liza1107","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+2.6%"},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231","lichess":"goshapur","lrt":"1256","lrtDeltaPctNum":-4.704097116843703,"hkey":"lich:goshapur","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-4.7%"},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lichess":"borisovmax","lrt":"1580","lrtDeltaPctNum":0.7010834926704907,"hkey":"lich:borisovmax","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+0.7%"},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ПЕРВАКОВА АЛЁНА ДЕНИСОВНА|2018","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"—"},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lichess":"platon_korelov-2015","lrt":"1187","lrtDeltaPctNum":-9.939301972685888,"hkey":"lich:platon_korelov-2015","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-9.9%"},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152","lichess":"igorlego","lrt":"1443","lrtDeltaPctNum":-1.367053998632946,"hkey":"lich:igorlego","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-1.4%"},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lichess":"dimshah","lrt":"1406","lrtDeltaPctNum":0.4285714285714286,"hkey":"lich:dimshah","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+0.4%"},{"fullName":"Марков Андрей Алексеевич","id":"541954","year":"2015","rt":"1139","lichess":"maa2015","lrt":"1633","lrtDeltaPctNum":8.866666666666667,"hkey":"lich:maa2015","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+8.9%"},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lichess":"sl5557","lrt":"1140","lrtDeltaPctNum":5.360443622920517,"hkey":"lich:sl5557","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"+5.4%"},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lichess":"secret_kelpi","lrt":"1269","lrtDeltaPctNum":-1.5515903801396431,"hkey":"lich:secret_kelpi","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-1.6%"},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032","lichess":"lechat_2016","lrt":"1295","lrtDeltaPctNum":-0.7662835249042145,"hkey":"lich:lechat_2016","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"-0.8%"},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:КУХНИН МИХАИЛ ИВАНОВИЧ|2016","rtDeltaPctNum":null,"rtDeltaPct":"—","lrtDeltaPct":"—"}];
+  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ВРУБЕЛЬ КОНСТАНТИН РОМАНОВИЧ|2017","rtDeltaPctNum":null},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445","lichess":"dasshhaa","lrt":"1983","lrtDeltaPctNum":2.058672156459084,"hkey":"lich:dasshhaa","rtDeltaPctNum":null},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lichess":"kirill_fut","lrt":"1629","lrtDeltaPctNum":1.1801242236024845,"hkey":"lich:kirill_fut","rtDeltaPctNum":null},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409","lichess":"student2323","lrt":"1749","lrtDeltaPctNum":-2.2905027932960893,"hkey":"lich:student2323","rtDeltaPctNum":null},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lichess":"ktotakaia","lrt":"1775","lrtDeltaPctNum":-1.0590858416945375,"hkey":"lich:ktotakaia","rtDeltaPctNum":null},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lichess":"grdaniil","lrt":"1841","lrtDeltaPctNum":2.39154616240267,"hkey":"lich:grdaniil","rtDeltaPctNum":null},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lichess":"liza1107","lrt":"1534","lrtDeltaPctNum":2.608695652173913,"hkey":"lich:liza1107","rtDeltaPctNum":null},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231","lichess":"goshapur","lrt":"1256","lrtDeltaPctNum":-4.704097116843703,"hkey":"lich:goshapur","rtDeltaPctNum":null},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lichess":"borisovmax","lrt":"1580","lrtDeltaPctNum":0.7010834926704907,"hkey":"lich:borisovmax","rtDeltaPctNum":null},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:ПЕРВАКОВА АЛЁНА ДЕНИСОВНА|2018","rtDeltaPctNum":null},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lichess":"platon_korelov-2015","lrt":"1187","lrtDeltaPctNum":-9.939301972685888,"hkey":"lich:platon_korelov-2015","rtDeltaPctNum":null},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152","lichess":"igorlego","lrt":"1443","lrtDeltaPctNum":-1.367053998632946,"hkey":"lich:igorlego","rtDeltaPctNum":null},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lichess":"dimshah","lrt":"1406","lrtDeltaPctNum":0.4285714285714286,"hkey":"lich:dimshah","rtDeltaPctNum":null},{"fullName":"Марков Андрей Алексеевич","id":"541954","year":"2015","rt":"1139","lichess":"maa2015","lrt":"1633","lrtDeltaPctNum":8.866666666666667,"hkey":"lich:maa2015","rtDeltaPctNum":null},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lichess":"sl5557","lrt":"1140","lrtDeltaPctNum":5.360443622920517,"hkey":"lich:sl5557","rtDeltaPctNum":null},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lichess":"secret_kelpi","lrt":"1269","lrtDeltaPctNum":-1.5515903801396431,"hkey":"lich:secret_kelpi","rtDeltaPctNum":null},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032","lichess":"lechat_2016","lrt":"1295","lrtDeltaPctNum":-0.7662835249042145,"hkey":"lich:lechat_2016","rtDeltaPctNum":null},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lichess":"","lrt":"-","lrtDeltaPctNum":null,"hkey":"nm:КУХНИН МИХАИЛ ИВАНОВИЧ|2016","rtDeltaPctNum":null}];
   let col = 'rt';   // текущая колонка сортировки
   let asc = false;  // по убыванию
   let mode = 'rt';  // выбранный рейтинг (rt | lrt)
@@ -92,6 +93,30 @@
     document.querySelectorAll('td[data-col="lrt"]').forEach(td => td.classList.toggle('hide', showRt));
   }
 
+  // цвет по «Прогрессу»: <0 — краснеет, 0 — серый, >0 — зеленеет
+  function colorForDelta(pct){
+    if (pct === null || isNaN(pct)) return '#888';
+    const cap = 30; // при |pct| >= 30% цвет максимально насыщенный
+    const t = Math.max(0, Math.min(Math.abs(pct) / cap, 1)); // 0..1
+    if (pct > 0) {
+      // зелёный, насыщенность растёт с t
+      const s = Math.round(30 + 60 * t); // 30..90
+      const l = 35;                      // фикс
+      return 'hsl(135, ' + s + '%, ' + l + '%)';
+    } else if (pct < 0) {
+      // красный, насыщенность растёт с |t|
+      const s = Math.round(30 + 60 * t); // 30..90
+      const l = 40;
+      return 'hsl(0, ' + s + '%, ' + l + '%)';
+    }
+    return '#888'; // ноль — серый
+  }
+  function fmtDelta(pct){
+    if (pct === null || isNaN(pct)) return '—';
+    const sign = pct > 0 ? '+' : '';
+    return sign + pct.toFixed(1) + '%';
+  }
+
   function render(){
     const q = (document.getElementById('q').value || '').toLowerCase().trim();
     const body = document.querySelector('#tab tbody');
@@ -102,7 +127,7 @@
     filtered.sort((a,b) => {
       const A = a[col] ?? '';
       const B = b[col] ?? '';
-      // числовая сортировка для рейтингов и дельт
+      // числовая сортировка для рейтингов и прогресса
       if (col === 'rt' || col === 'lrt' || col === 'rtDeltaPctNum' || col === 'lrtDeltaPctNum') {
         const xA = isNaN(parseFloat(A)) ? (typeof A === 'number' ? A : 0) : parseFloat(A);
         const xB = isNaN(parseFloat(B)) ? (typeof B === 'number' ? B : 0) : parseFloat(B);
@@ -114,8 +139,10 @@
     });
 
     filtered.forEach((r, i) => {
-      const rtPct  = (r.rtDeltaPctNum === null || isNaN(r.rtDeltaPctNum))   ? '—' : ((r.rtDeltaPctNum>0?'+':'') + r.rtDeltaPctNum.toFixed(1) + '%');
-      const lrtPct = (r.lrtDeltaPctNum === null || isNaN(r.lrtDeltaPctNum)) ? '—' : ((r.lrtDeltaPctNum>0?'+':'') + r.lrtDeltaPctNum.toFixed(1) + '%');
+      const rtColor  = colorForDelta(r.rtDeltaPctNum);
+      const lrtColor = colorForDelta(r.lrtDeltaPctNum);
+      const rtProg   = '<span class="delta" style="color:'+rtColor+'">'  + fmtDelta(r.rtDeltaPctNum)  + '</span>';
+      const lrtProg  = '<span class="delta" style="color:'+lrtColor+'">' + fmtDelta(r.lrtDeltaPctNum) + '</span>';
 
       const tr = document.createElement('tr');
       tr.innerHTML =
@@ -123,10 +150,10 @@
         '<td>' + r.fullName + '</td>' +
         '<td>' + r.id       + '</td>' +
         '<td>' + r.year     + '</td>' +
-        '<td data-col="rt">'  + r.rt   + '</td>' +
-        '<td data-col="rt">'  + rtPct  + '</td>' +
-        '<td data-col="lrt">' + r.lrt  + '</td>' +
-        '<td data-col="lrt">' + lrtPct + '</td>';
+        '<td data-col="rt">'  + r.rt     + '</td>' +
+        '<td data-col="rt">'  + rtProg   + '</td>' +
+        '<td data-col="lrt">' + r.lrt    + '</td>' +
+        '<td data-col="lrt">' + lrtProg  + '</td>';
       body.appendChild(tr);
     });
 
