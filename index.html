@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Список учеников — ФШР RAPID + Lichess RAPID</title>
+<title>Список учеников — ФШР Rapid + Lichess Rapid</title>
 <style>
   body { font-family: Arial, sans-serif; margin:0; padding:20px; }
   h2 { margin: 0 0 16px; text-align:center; }
@@ -22,7 +22,7 @@
 </style>
 </head>
 <body>
-  <h2>Ученики — ФШР RAPID + Lichess RAPID</h2>
+  <h2>Ученики — ФШР Rapid + Lichess Rapid</h2>
   <div class="toolbar">
     <input id="q" class="search" type="search" placeholder="Поиск по ФИО..." oninput="render()" />
   </div>
@@ -41,7 +41,7 @@
   </table>
 
 <script>
-  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lrt":"-","lichess":""},{"fullName":"Мануйлова Дарья Алексеевна","id":"Dasshhaa","year":"2016","rt":"1445","lrt":"-","lichess":""},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lrt":"-","lichess":""},{"fullName":"Афонин Александр Викторович","id":"student2323","year":"2010","rt":"1409","lrt":"-","lichess":""},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lrt":"-","lichess":""},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lrt":"-","lichess":""},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lrt":"-","lichess":""},{"fullName":"Трощенко Георгий Алексеевич","id":"goshapur","year":"2016","rt":"1231","lrt":"-","lichess":""},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lrt":"-","lichess":""},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lrt":"-","lichess":""},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lrt":"-","lichess":""},{"fullName":"Леготин Игорь Георгиевич","id":"IgorLego","year":"2013","rt":"1152","lrt":"-","lichess":""},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lrt":"-","lichess":""},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lrt":"-","lichess":""},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lrt":"-","lichess":""},{"fullName":"Павлов Алексей Николаевич","id":"Lechat_2016","year":"2016","rt":"1032","lrt":"-","lichess":""},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lrt":"-","lichess":""}];
+  const data = [{"fullName":"Врубель Константин Романович","id":"561139","year":"2017","rt":"1730","lrt":"-","lichess":""},{"fullName":"Мануйлова Дарья Алексеевна","id":"500224","year":"2016","rt":"1445","lrt":"-","lichess":""},{"fullName":"Распутько Кирилл Анатольевич","id":"353274","year":"2011","rt":"1429","lrt":"-","lichess":""},{"fullName":"Афонин Александр Викторович","id":"103499","year":"2010","rt":"1409","lrt":"-","lichess":""},{"fullName":"Бажутова Ева Дмитриевна","id":"471018","year":"2017","rt":"1391","lrt":"-","lichess":""},{"fullName":"Грибков Даниил Петрович","id":"79383","year":"2009","rt":"1387","lrt":"-","lichess":""},{"fullName":"Подабашева Елизавета Александровна","id":"529422","year":"2015","rt":"1240","lrt":"-","lichess":""},{"fullName":"Трощенко Георгий Алексеевич","id":"491569","year":"2016","rt":"1231","lrt":"-","lichess":""},{"fullName":"Борисов Максим Антонович","id":"623921","year":"2016","rt":"1189","lrt":"-","lichess":""},{"fullName":"Первакова Алёна Денисовна","id":"561633","year":"2018","rt":"1188","lrt":"-","lichess":""},{"fullName":"Зверев Платон Иванович","id":"594246","year":"2015","rt":"1185","lrt":"-","lichess":""},{"fullName":"Леготин Игорь Георгиевич","id":"468075","year":"2013","rt":"1152","lrt":"-","lichess":""},{"fullName":"Рубайлов Дмитрий Михайлович","id":"475337","year":"2014","rt":"1147","lrt":"-","lichess":""},{"fullName":"Лобанов Вячеслав Константинович","id":"505554","year":"2016","rt":"1085","lrt":"-","lichess":""},{"fullName":"Новикова Марина Сергеевна","id":"673519","year":"1987","rt":"1050","lrt":"-","lichess":""},{"fullName":"Павлов Алексей Николаевич","id":"520335","year":"2016","rt":"1032","lrt":"-","lichess":""},{"fullName":"Кухнин Михаил Иванович","id":"710254","year":"2016","rt":"1000","lrt":"-","lichess":""}];
   let col = 'rt';
   let asc = false;
 
@@ -58,19 +58,14 @@
     const body = document.querySelector('#tab tbody');
     body.innerHTML = '';
 
-    const filtered = data.filter(r => {
-      if (!q) return true;
-      return String(r.fullName).toLowerCase().includes(q);
-    });
+    const filtered = data.filter(r => !q || String(r.fullName).toLowerCase().includes(q));
 
     filtered.sort((a,b) => {
       const A = a[col] ?? '';
       const B = b[col] ?? '';
-      // числовая сортировка для рейтингов
       if (col === 'rt' || col === 'lrt') {
-        const nA = parseFloat(A); const nB = parseFloat(B);
-        const xA = isNaN(nA) ? 0 : nA;
-        const xB = isNaN(nB) ? 0 : nB;
+        const xA = isNaN(parseFloat(A)) ? 0 : parseFloat(A);
+        const xB = isNaN(parseFloat(B)) ? 0 : parseFloat(B);
         return asc ? (xA - xB) : (xB - xA);
       }
       if (A < B) return asc ? -1 : 1;
@@ -92,8 +87,7 @@
   }
 
   window.onload = function(){
-    const th = document.querySelector('th[data-k="rt"]');
-    th.classList.add('sort-desc');
+    document.querySelector('th[data-k="rt"]').classList.add('sort-desc');
     render();
   };
 </script>
